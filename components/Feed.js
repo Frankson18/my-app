@@ -1,42 +1,31 @@
+import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import Stories from './Stories';
 
 export default function Feed() {
-    const posts = [
-        {
-            id: 1,
-            nome: 'Pernalonga',
-            imgPerfil: require('../assets/images/pernalonga.jpg'),
-            img: require('../assets/images/pernalonga.jpg'),
-            aspectRatio: 0.756,
-        },
-        {
-            id: 2,
-            nome: 'Pernalonga',
-            imgPerfil: require('../assets/images/pernalonga.jpg'),
-            img: require('../assets/images/pernalonga.jpg'),
-            aspectRatio: 0.756,
-        },
-        {
-            id: 3,
-            nome: 'Pernalonga',
-            imgPerfil: require('../assets/images/pernalonga.jpg'),
-            img: require('../assets/images/pernalonga.jpg'),
-            aspectRatio:  0.756,
-        }
-    ];
+    const [feed,setFeed] = useState([]);
 
-    function RenderItem({ item }) {
+    useEffect(function(){
+        async function getData(){
+            const response = await fetch('https://mobile.ect.ufrn.br:3000/feed');
+            const feed = await response.json();
+            setFeed(feed);
+        }
+        getData();
+    },[]);
+    function RenderItem({ item, index }) {
         return (
             <View style={styles.post}>
+                {index === 0 && <Stories/>}
                 <View style={styles.postheader}>
                     <View style={styles.postheaderesquerda}>
-                        <Image style={styles.postheaderimg} source={item.imgPerfil} />
-                        <Text>{item.nome}</Text>
+                        <Image style={styles.postheaderimg} source={{uri:item.imgPerfilUri}} />
+                        <Text>{item.nomeUsuario}</Text>
                     </View>
                     <FontAwesome5 name='ellipsis-h' size={16} color='black' />
                 </View>
-                    <Image style={styles.postimg} aspectRatio={item.aspectRatio} source={item.img} />
+                    <Image style={styles.postimg} aspectRatio={item.aspectRatio} source={{uri:item.imgPostUri}} />
                 <View style={styles.footer}>
                     <FontAwesome5 style={styles.footericon} name='heart' size={36} color='black' />
                     <FontAwesome5 style={styles.footericon} name='comment' size={36} color='black' />
@@ -47,7 +36,7 @@ export default function Feed() {
     }
     return (
         <FlatList
-            data={posts}
+            data={feed}
             renderItem={RenderItem}
             keyExtractor={item=>item.id}
             showsVerticalScrollIndicator={false}
