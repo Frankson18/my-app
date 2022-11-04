@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Stories from '../components/Stories';
 import Feed from '../components/Feed';
 
-export default function App({navigation}) {
+export default function HomeSreen({navigation}) {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
